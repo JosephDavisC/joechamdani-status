@@ -97,46 +97,10 @@ status/
 
 ---
 
-## Local Development
-
-```bash
-# install dependencies
-pnpm install
-
-# create local database (assumes PostgreSQL running)
-createdb status_dev
-
-# configure environment
-cp .env.example .env.local
-# edit .env.local with your DATABASE_URL and CRON_SECRET
-
-# run migrations
-pnpm prisma migrate dev
-
-# seed sites
-pnpm tsx prisma/seed.ts
-
-# start dev server
-pnpm dev
-
-# trigger a monitoring round
-curl "http://localhost:3000/api/cron?token=YOUR_CRON_SECRET"
-```
-
----
-
-## Deployment
-
-Runs as a Docker sidecar alongside the dashboard on the same VPS (port 3003). Uses a separate `status` database in the shared PostgreSQL instance.
-
-External cron job (cron-job.org) pings `/api/cron?token=SECRET` every 60 seconds to trigger monitoring rounds.
-
----
-
 ## Architecture
 
 ```
-cron-job.org (every 60s)
+Cron (every 60s)
   → GET /api/cron?token=SECRET
     → pingSite() for each active site (HEAD, 10s timeout)
     → Store Ping record in DB
