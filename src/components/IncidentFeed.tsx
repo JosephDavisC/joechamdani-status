@@ -41,14 +41,14 @@ export function IncidentFeed() {
   const resolved = incidents.filter((i) => i.resolvedAt);
 
   return (
-    <div className="glass-card p-6">
+    <div className="glass-card p-4 sm:p-6">
       <h2 className="mb-4 font-[family-name:var(--font-heading)] text-lg font-bold tracking-tight text-[var(--foreground)]">
         Incident History
       </h2>
 
       {incidents.length === 0 ? (
-        <div className="flex items-center gap-2 py-6 text-center text-sm text-[var(--muted-foreground)]">
-          <CheckCircle2 className="mx-auto h-5 w-5 text-green-500" />
+        <div className="flex flex-col items-center gap-2 py-6 text-sm text-[var(--muted-foreground)]">
+          <CheckCircle2 className="h-5 w-5 text-green-500" />
           <span>No incidents in the last 90 days</span>
         </div>
       ) : (

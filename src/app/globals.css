@@ -73,14 +73,16 @@ body {
   border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-.glass-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-}
+@media (hover: hover) {
+  .glass-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  }
 
-.dark .glass-card:hover {
-  border-color: rgba(96, 165, 250, 0.3);
-  box-shadow: 0 25px 50px -12px rgba(96, 165, 250, 0.1);
+  .dark .glass-card:hover {
+    border-color: rgba(96, 165, 250, 0.3);
+    box-shadow: 0 25px 50px -12px rgba(96, 165, 250, 0.1);
+  }
 }
 
 /* Status glow effects */

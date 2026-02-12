@@ -57,17 +57,17 @@ export function StatusHeader({
       : "bg-[var(--status-up)]";
 
   return (
-    <header className="glass-card mb-8 p-6">
+    <header className="glass-card mb-6 p-4 sm:mb-8 sm:p-6">
       <div className="flex items-center justify-between">
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-3 sm:gap-4">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src="https://joechamdani.com/Logo_Joseph.webp"
             alt="Joseph Davis Chamdani"
-            className="h-8 w-8 rounded-full"
+            className="h-7 w-7 rounded-full sm:h-8 sm:w-8"
           />
           <div>
-            <h1 className="font-[family-name:var(--font-heading)] text-lg font-bold tracking-tight text-[var(--foreground)]">
+            <h1 className="font-[family-name:var(--font-heading)] text-base font-bold tracking-tight text-[var(--foreground)] sm:text-lg">
               status.joechamdani.com
             </h1>
           </div>
@@ -88,8 +88,8 @@ export function StatusHeader({
         )}
       </div>
 
-      <div className="mt-6 flex items-center justify-between">
-        <div className="flex items-center gap-3">
+      <div className="mt-4 flex items-center justify-between sm:mt-6">
+        <div className="flex items-center gap-2 sm:gap-3">
           <div className="relative flex items-center">
             <div
               className={`h-3 w-3 rounded-full ${statusColor} ${statusGlow}`}
@@ -100,13 +100,13 @@ export function StatusHeader({
               />
             )}
           </div>
-          <span className="font-[family-name:var(--font-heading)] text-xl font-bold tracking-tight">
+          <span className="font-[family-name:var(--font-heading)] text-base font-bold tracking-tight sm:text-xl">
             {statusText}
           </span>
         </div>
 
         {overallUptime !== null && (
-          <span className="font-[family-name:var(--font-mono)] text-sm tabular-nums text-[var(--muted-foreground)]">
+          <span className="font-[family-name:var(--font-mono)] text-xs tabular-nums text-[var(--muted-foreground)] sm:text-sm">
             {overallUptime}% overall
           </span>
         )}

@@ -85,11 +85,11 @@ export function SiteCard({ site }: { site: SiteData }) {
     <div className="glass-card overflow-hidden">
       <button
         onClick={() => setExpanded(!expanded)}
-        className="flex w-full items-center gap-4 p-4 text-left"
+        className="flex w-full items-center gap-3 p-3 text-left sm:gap-4 sm:p-4"
       >
         <div className="min-w-0 flex-1">
-          <div className="flex items-center gap-3">
-            <h3 className="font-[family-name:var(--font-heading)] text-[15px] font-semibold text-[var(--foreground)]">
+          <div className="flex flex-wrap items-center gap-2 sm:gap-3">
+            <h3 className="font-[family-name:var(--font-heading)] text-sm font-semibold text-[var(--foreground)] sm:text-[15px]">
               {site.name}
             </h3>
             {statusBadge}
@@ -106,9 +106,9 @@ export function SiteCard({ site }: { site: SiteData }) {
           </a>
         </div>
 
-        <div className="flex items-center gap-4 shrink-0">
+        <div className="flex items-center gap-2 shrink-0 sm:gap-4">
           {displayResponseTime && (
-            <span className="font-[family-name:var(--font-mono)] text-sm tabular-nums text-[var(--muted-foreground)]">
+            <span className="hidden font-[family-name:var(--font-mono)] text-sm tabular-nums text-[var(--muted-foreground)] sm:inline">
               {displayResponseTime}
             </span>
           )}
@@ -123,15 +123,22 @@ export function SiteCard({ site }: { site: SiteData }) {
         </div>
       </button>
 
-      <div className="px-4 pb-3">
+      <div className="px-3 pb-2 sm:px-4 sm:pb-3">
         <UptimeBar data={history} />
       </div>
 
       {expanded && (
-        <div className="border-t border-[var(--border)] px-4 py-4">
-          <h4 className="mb-2 font-[family-name:var(--font-heading)] text-xs font-semibold uppercase tracking-wider text-[var(--muted-foreground)]">
-            Response Time (24h)
-          </h4>
+        <div className="border-t border-[var(--border)] px-3 py-3 sm:px-4 sm:py-4">
+          <div className="mb-2 flex items-center justify-between">
+            <h4 className="font-[family-name:var(--font-heading)] text-xs font-semibold uppercase tracking-wider text-[var(--muted-foreground)]">
+              Response Time (24h)
+            </h4>
+            {displayResponseTime && (
+              <span className="font-[family-name:var(--font-mono)] text-xs tabular-nums text-[var(--muted-foreground)] sm:hidden">
+                {displayResponseTime}
+              </span>
+            )}
+          </div>
           {responseTimes.length >= 5 ? (
             <ResponseSparkline data={responseTimes} />
           ) : (

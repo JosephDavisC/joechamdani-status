@@ -50,7 +50,7 @@ export default function StatusPage() {
       .reverse()[0] ?? null;
 
   return (
-    <main className="mx-auto max-w-3xl px-4 py-8 sm:px-6 sm:py-12">
+    <main className="mx-auto max-w-3xl px-3 py-6 sm:px-6 sm:py-12">
       <StatusHeader
         allUp={allUp}
         someDown={someDown}
@@ -59,21 +59,21 @@ export default function StatusPage() {
         overallUptime={overallUptime}
       />
 
-      <section className="space-y-3">
+      <section className="space-y-2 sm:space-y-3">
         {sites.map((site) => (
           <SiteCard key={site.id} site={site} />
         ))}
       </section>
 
       {sites.length > 0 && (
-        <section className="mt-8">
+        <section className="mt-6 sm:mt-8">
           <ResponseTimeChart
             sites={sites.map((s) => ({ id: s.id, name: s.name }))}
           />
         </section>
       )}
 
-      <section className="mt-8">
+      <section className="mt-6 sm:mt-8">
         <IncidentFeed />
       </section>
 
