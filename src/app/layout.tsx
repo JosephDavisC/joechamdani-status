@@ -33,14 +33,12 @@ export const metadata: Metadata = {
     description:
       "Real-time status and uptime monitoring for joechamdani.com services.",
     siteName: "Joseph Davis Chamdani Status",
-    images: [{ url: "/og-image.png", width: 1200, height: 630 }],
   },
   twitter: {
     card: "summary_large_image",
     title: "Status | Joseph Davis Chamdani",
     description:
       "Real-time status and uptime monitoring for joechamdani.com services.",
-    images: ["/og-image.png"],
   },
   icons: {
     icon: "/favicon.ico",
