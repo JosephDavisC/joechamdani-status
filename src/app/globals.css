@@ -1,0 +1,106 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:is(.dark *));
+
+:root {
+  --background: #F9F7F2;
+  --foreground: #3D2B1F;
+  --card: #FFFFFF;
+  --card-foreground: #3D2B1F;
+  --popover: #FFFFFF;
+  --popover-foreground: #3D2B1F;
+  --primary: #4CBB17;
+  --primary-foreground: #FFFFFF;
+  --secondary: #F0EDE6;
+  --secondary-foreground: #3D2B1F;
+  --muted: #F0EDE6;
+  --muted-foreground: #78716c;
+  --accent: #EBE8E0;
+  --accent-foreground: #3D2B1F;
+  --destructive: #DC2626;
+  --border: #E2DFD8;
+  --input: #E2DFD8;
+  --ring: #4CBB17;
+  --radius: 0.75rem;
+
+  --status-up: #22c55e;
+  --status-degraded: #eab308;
+  --status-down: #ef4444;
+}
+
+.dark {
+  --background: hsl(222 40% 11%);
+  --foreground: hsl(210 40% 98%);
+  --card: hsl(222 40% 14%);
+  --card-foreground: hsl(210 40% 98%);
+  --popover: hsl(222 40% 14%);
+  --popover-foreground: hsl(210 40% 98%);
+  --primary: #60A5FA;
+  --primary-foreground: hsl(222 40% 11%);
+  --secondary: hsl(222 30% 18%);
+  --secondary-foreground: hsl(210 40% 98%);
+  --muted: hsl(222 30% 18%);
+  --muted-foreground: hsl(215 20% 65%);
+  --accent: hsl(222 30% 20%);
+  --accent-foreground: hsl(210 40% 98%);
+  --destructive: #F87171;
+  --border: hsl(215 20% 25%);
+  --input: hsl(215 20% 25%);
+  --ring: #60A5FA;
+}
+
+* {
+  border-color: var(--border);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans), system-ui, sans-serif;
+}
+
+/* Glassmorphism card in dark mode */
+.glass-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.dark .glass-card {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.glass-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.dark .glass-card:hover {
+  border-color: rgba(96, 165, 250, 0.3);
+  box-shadow: 0 25px 50px -12px rgba(96, 165, 250, 0.1);
+}
+
+/* Status glow effects */
+.glow-up {
+  box-shadow: 0 0 8px rgba(34, 197, 94, 0.3);
+}
+
+.glow-degraded {
+  box-shadow: 0 0 8px rgba(234, 179, 8, 0.3);
+}
+
+.glow-down {
+  box-shadow: 0 0 8px rgba(239, 68, 68, 0.3);
+}
+
+/* Uptime bar cell */
+.uptime-cell {
+  width: 100%;
+  min-width: 2px;
+  height: 20px;
+  border-radius: 2px;
+  flex: 1;
+}

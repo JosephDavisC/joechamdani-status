@@ -1,0 +1,37 @@
+name: Deploy Status Page
+
+on:
+  push:
+    branches: [main]
+
+concurrency:
+  group: deploy
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to VPS
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          command_timeout: 10m
+          script: |
+            set -e
+            cd ~/dashboard/status
+            git fetch origin main
+            git reset --hard origin/main
+            cd ~/dashboard
+            docker builder prune -af
+            docker compose build --no-cache status migrate-status
+            docker compose --profile migrate run --rm migrate-status
+            docker compose stop status
+            docker compose rm -f status
+            docker compose up -d status db
+            sleep 10
+            curl -sf https://status.joechamdani.com/api/health || echo "Health check failed!"
+            docker image prune -af --filter "until=24h"
+            docker container prune -f

@@ -1,0 +1,49 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Site {
+  id        String   @id @default(cuid())
+  name      String
+  url       String   @unique
+  order     Int      @default(0)
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  pings     Ping[]
+  incidents Incident[]
+
+  @@index([active, order])
+}
+
+model Ping {
+  id           String   @id @default(cuid())
+  siteId       String
+  status       Int
+  responseTime Int
+  isUp         Boolean
+  checkedAt    DateTime @default(now())
+  site         Site     @relation(fields: [siteId], references: [id], onDelete: Cascade)
+
+  @@index([siteId, checkedAt])
+  @@index([checkedAt])
+}
+
+model Incident {
+  id         String    @id @default(cuid())
+  siteId     String
+  type       String    @default("downtime")
+  title      String
+  startedAt  DateTime
+  resolvedAt DateTime?
+  duration   Int?
+  site       Site      @relation(fields: [siteId], references: [id], onDelete: Cascade)
+
+  @@index([siteId, startedAt])
+  @@index([resolvedAt])
+}
