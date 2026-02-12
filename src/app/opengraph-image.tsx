@@ -105,17 +105,27 @@ export default function Image() {
           ))}
         </div>
 
-        {/* Footer */}
+        {/* Footer with logo */}
         <div
           style={{
             position: "absolute",
             bottom: 32,
-            fontSize: 16,
-            color: "#64748b",
             display: "flex",
+            alignItems: "center",
+            gap: 10,
           }}
         >
-          Joseph Davis Chamdani
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="https://joechamdani.com/Logo_Joseph.webp"
+            alt=""
+            width={28}
+            height={28}
+            style={{ borderRadius: "50%" }}
+          />
+          <span style={{ fontSize: 16, color: "#64748b" }}>
+            Joseph Davis Chamdani
+          </span>
         </div>
       </div>
     ),
