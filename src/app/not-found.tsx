@@ -65,8 +65,16 @@ export default function NotFound() {
         {/* Bouncing tennis ball */}
         <div className="text-6xl mt-12 animate-bounce">🎾</div>
 
-        <div className="mt-8 text-slate-500 text-sm font-mono animate-[fadeUp_0.5s_ease-out_0.6s_both]">
-          Error Code: 404 | Page Not Found
+        <div className="mt-8 animate-[fadeUp_0.5s_ease-out_0.6s_both]">
+          <p className="text-slate-500 text-sm font-mono">
+            Error Code: 404 | Page Not Found
+          </p>
+          <a
+            href="/"
+            className="mt-2 inline-block text-xs text-slate-500 underline decoration-slate-600 hover:text-slate-300"
+          >
+            Check system status
+          </a>
         </div>
       </div>
     </div>
