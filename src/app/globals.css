@@ -98,6 +98,21 @@ body {
   box-shadow: 0 0 8px rgba(239, 68, 68, 0.3);
 }
 
+/* 404 page animations */
+@keyframes bounceIn {
+  0% { transform: scale(0) rotate(-180deg); opacity: 0; }
+  60% { transform: scale(1.1) rotate(10deg); opacity: 1; }
+  100% { transform: scale(1) rotate(0deg); opacity: 1; }
+}
+@keyframes scaleIn {
+  from { transform: scale(0.5); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+@keyframes fadeUp {
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
 /* Uptime bar cell */
 .uptime-cell {
   width: 100%;
