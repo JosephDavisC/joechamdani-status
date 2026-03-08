@@ -1,8 +1,8 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useRef, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronDown, ChevronLeft, ChevronRight } from "lucide-react";
 
 interface SiteOption {
   id: string;
@@ -34,16 +34,12 @@ function getColorHex(uptime: number): string {
 
 function getMonthGrid(year: number, month: number) {
   const firstDay = new Date(year, month, 1);
-  const lastDay = new Date(year, month + 1, 0);
-  const daysInMonth = lastDay.getDate();
-  const startDow = firstDay.getDay(); // 0=Sun
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+  const startDow = firstDay.getDay();
 
   const cells: (number | null)[] = [];
-  // Fill leading blanks
   for (let i = 0; i < startDow; i++) cells.push(null);
-  // Fill days
   for (let d = 1; d <= daysInMonth; d++) cells.push(d);
-  // Fill trailing blanks to complete last row
   while (cells.length % 7 !== 0) cells.push(null);
 
   return cells;
@@ -56,14 +52,69 @@ function formatMonth(year: number, month: number): string {
   });
 }
 
+// Custom dropdown component
+function SiteDropdown({
+  sites,
+  selectedId,
+  onChange,
+}: {
+  sites: SiteOption[];
+  selectedId: string;
+  onChange: (id: string) => void;
+}) {
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+  const selected = sites.find((s) => s.id === selectedId);
+
+  useEffect(() => {
+    function handleClick(e: MouseEvent) {
+      if (ref.current && !ref.current.contains(e.target as Node)) {
+        setOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClick);
+    return () => document.removeEventListener("mousedown", handleClick);
+  }, []);
+
+  return (
+    <div ref={ref} className="relative">
+      <button
+        onClick={() => setOpen(!open)}
+        className="flex items-center gap-2 rounded-lg border border-[var(--border)] bg-[var(--card)] px-3 py-2 text-sm font-medium text-[var(--foreground)] transition-colors hover:bg-[var(--accent)]"
+      >
+        <span>{selected?.name ?? "Select site"}</span>
+        <ChevronDown
+          className={`h-3.5 w-3.5 text-[var(--muted-foreground)] transition-transform ${open ? "rotate-180" : ""}`}
+        />
+      </button>
+      {open && (
+        <div className="absolute left-0 top-full z-40 mt-1 min-w-[180px] overflow-hidden rounded-lg border border-[var(--border)] bg-[var(--popover)] shadow-xl">
+          {sites.map((s) => (
+            <button
+              key={s.id}
+              onClick={() => {
+                onChange(s.id);
+                setOpen(false);
+              }}
+              className={`flex w-full items-center gap-2 px-3 py-2 text-left text-sm transition-colors hover:bg-[var(--accent)] ${
+                s.id === selectedId
+                  ? "font-medium text-[var(--primary)]"
+                  : "text-[var(--foreground)]"
+              }`}
+            >
+              {s.name}
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
 export function UptimeHistory({ sites }: { sites: SiteOption[] }) {
   const [selectedSiteId, setSelectedSiteId] = useState(sites[0]?.id ?? "");
-  const [monthOffset, setMonthOffset] = useState(0); // 0 = current range
+  const [monthOffset, setMonthOffset] = useState(0);
 
-  const selectedSite = sites.find((s) => s.id === selectedSiteId);
-
-  // Calculate 3-month range based on offset
-  // Each offset step moves 3 months
   const now = new Date();
   const endMonth = new Date(now.getFullYear(), now.getMonth() + monthOffset * 3);
   const months = useMemo(() => {
@@ -89,7 +140,6 @@ export function UptimeHistory({ sites }: { sites: SiteOption[] }) {
     return `${f} to ${l}`;
   }, [months]);
 
-  // Fetch 90+ days of data for the selected site
   const { data: history = [] } = useQuery<DayData[]>({
     queryKey: ["uptime-history", selectedSiteId],
     queryFn: async () => {
@@ -106,7 +156,6 @@ export function UptimeHistory({ sites }: { sites: SiteOption[] }) {
     [history]
   );
 
-  // Calculate monthly uptime percentages
   const monthlyUptimes = useMemo(() => {
     return months.map(({ year, month }) => {
       const daysInMonth = new Date(year, month + 1, 0).getDate();
@@ -145,19 +194,13 @@ export function UptimeHistory({ sites }: { sites: SiteOption[] }) {
         Uptime History
       </h2>
 
-      {/* Controls: site selector + month navigation */}
+      {/* Controls */}
       <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <select
-          value={selectedSiteId}
-          onChange={(e) => setSelectedSiteId(e.target.value)}
-          className="rounded-lg border border-[var(--border)] bg-[var(--card)] px-3 py-2 text-sm text-[var(--foreground)] outline-none focus:ring-2 focus:ring-[var(--ring)] sm:w-auto"
-        >
-          {sites.map((s) => (
-            <option key={s.id} value={s.id}>
-              {s.name}
-            </option>
-          ))}
-        </select>
+        <SiteDropdown
+          sites={sites}
+          selectedId={selectedSiteId}
+          onChange={setSelectedSiteId}
+        />
 
         <div className="flex items-center gap-2">
           <button
@@ -201,7 +244,6 @@ export function UptimeHistory({ sites }: { sites: SiteOption[] }) {
                 )}
               </div>
 
-              {/* Day-of-week headers */}
               <div className="mb-1 grid grid-cols-7 gap-[3px]">
                 {DOW_LABELS.map((d, i) => (
                   <div
@@ -213,7 +255,6 @@ export function UptimeHistory({ sites }: { sites: SiteOption[] }) {
                 ))}
               </div>
 
-              {/* Calendar grid */}
               <div className="grid grid-cols-7 gap-[3px]">
                 {cells.map((day, i) => {
                   if (day === null) {
@@ -244,11 +285,16 @@ export function UptimeHistory({ sites }: { sites: SiteOption[] }) {
                         const text = data
                           ? `${label} — ${data.uptimePercent}% uptime, avg ${data.avgResponseTime}ms`
                           : `${label} — No data`;
-                        setTooltip({
-                          text,
-                          x: rect.left + rect.width / 2,
-                          y: rect.top,
-                        });
+                        // Clamp tooltip within viewport
+                        const tooltipWidth = text.length * 7;
+                        const x = Math.max(
+                          tooltipWidth / 2 + 8,
+                          Math.min(
+                            window.innerWidth - tooltipWidth / 2 - 8,
+                            rect.left + rect.width / 2
+                          )
+                        );
+                        setTooltip({ text, x, y: rect.top });
                       }}
                       onMouseLeave={() => setTooltip(null)}
                     />
@@ -277,7 +323,11 @@ export function UptimeHistory({ sites }: { sites: SiteOption[] }) {
       {tooltip && (
         <div
           className="pointer-events-none fixed z-50 -translate-x-1/2 -translate-y-full whitespace-nowrap rounded-md bg-[var(--popover)] px-3 py-1.5 text-xs font-medium text-[var(--popover-foreground)] shadow-lg"
-          style={{ left: tooltip.x, top: tooltip.y - 8 }}
+          style={{
+            left: tooltip.x,
+            top: tooltip.y - 8,
+            border: "1px solid var(--border)",
+          }}
         >
           {tooltip.text}
         </div>
