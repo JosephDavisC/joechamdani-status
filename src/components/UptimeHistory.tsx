@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useRef, useEffect } from "react";
+import { useState, useMemo, useRef, useEffect, useCallback } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { ChevronDown, ChevronLeft, ChevronRight } from "lucide-react";
 
@@ -17,16 +17,16 @@ interface DayData {
 }
 
 function getColor(uptime: number): string {
-  if (uptime >= 99.9) return "bg-green-500";
-  if (uptime >= 99) return "bg-green-600";
+  if (uptime >= 100) return "bg-green-500";
+  if (uptime >= 99.5) return "bg-green-700";
   if (uptime >= 95) return "bg-yellow-500";
   if (uptime >= 90) return "bg-orange-500";
   return "bg-red-500";
 }
 
 function getColorHex(uptime: number): string {
-  if (uptime >= 99.9) return "#22c55e";
-  if (uptime >= 99) return "#16a34a";
+  if (uptime >= 100) return "#22c55e";
+  if (uptime >= 99.5) return "#15803d";
   if (uptime >= 95) return "#eab308";
   if (uptime >= 90) return "#f97316";
   return "#ef4444";
@@ -182,9 +182,24 @@ export function UptimeHistory({ sites }: { sites: SiteOption[] }) {
 
   const [tooltip, setTooltip] = useState<{
     text: string;
-    x: number;
-    y: number;
+    anchorX: number;
+    anchorY: number;
   } | null>(null);
+  const tooltipRef = useRef<HTMLDivElement>(null);
+  const [tooltipLeft, setTooltipLeft] = useState(0);
+
+  // After tooltip renders, measure it and clamp to viewport
+  const updateTooltipPos = useCallback(() => {
+    if (!tooltip || !tooltipRef.current) return;
+    const el = tooltipRef.current;
+    const w = el.offsetWidth;
+    const left = Math.max(8, Math.min(window.innerWidth - w - 8, tooltip.anchorX - w / 2));
+    setTooltipLeft(left);
+  }, [tooltip]);
+
+  useEffect(() => {
+    updateTooltipPos();
+  }, [updateTooltipPos]);
 
   const DOW_LABELS = ["S", "M", "T", "W", "T", "F", "S"];
 
@@ -285,16 +300,11 @@ export function UptimeHistory({ sites }: { sites: SiteOption[] }) {
                         const text = data
                           ? `${label} — ${data.uptimePercent}% uptime, avg ${data.avgResponseTime}ms`
                           : `${label} — No data`;
-                        // Clamp tooltip within viewport
-                        const tooltipWidth = text.length * 7;
-                        const x = Math.max(
-                          tooltipWidth / 2 + 8,
-                          Math.min(
-                            window.innerWidth - tooltipWidth / 2 - 8,
-                            rect.left + rect.width / 2
-                          )
-                        );
-                        setTooltip({ text, x, y: rect.top });
+                        setTooltip({
+                          text,
+                          anchorX: rect.left + rect.width / 2,
+                          anchorY: rect.top,
+                        });
                       }}
                       onMouseLeave={() => setTooltip(null)}
                     />
@@ -322,10 +332,12 @@ export function UptimeHistory({ sites }: { sites: SiteOption[] }) {
       {/* Tooltip */}
       {tooltip && (
         <div
-          className="pointer-events-none fixed z-50 -translate-x-1/2 -translate-y-full whitespace-nowrap rounded-md bg-[var(--popover)] px-3 py-1.5 text-xs font-medium text-[var(--popover-foreground)] shadow-lg"
+          ref={tooltipRef}
+          className="pointer-events-none fixed z-50 whitespace-nowrap rounded-md bg-[var(--popover)] px-3 py-1.5 text-xs font-medium text-[var(--popover-foreground)] shadow-lg"
           style={{
-            left: tooltip.x,
-            top: tooltip.y - 8,
+            left: tooltipLeft,
+            top: tooltip.anchorY - 8,
+            transform: "translateY(-100%)",
             border: "1px solid var(--border)",
           }}
         >
