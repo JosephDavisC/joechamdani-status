@@ -4,6 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { StatusHeader } from "@/components/StatusHeader";
 import { SiteCard } from "@/components/SiteCard";
 import { ResponseTimeChart } from "@/components/ResponseTimeChart";
+import { UptimeHistory } from "@/components/UptimeHistory";
 import { IncidentFeed } from "@/components/IncidentFeed";
 import { Footer } from "@/components/Footer";
 
@@ -77,7 +78,7 @@ export default function StatusPage() {
           {groups.map((group) => (
             <section key={group.label ?? "other"}>
               {group.label && (
-                <h2 className="mb-2 sm:mb-3 text-xs font-semibold uppercase tracking-widest text-muted-foreground">
+                <h2 className="mb-2 sm:mb-3 text-xs font-semibold uppercase tracking-widest text-[var(--muted-foreground)]">
                   {group.label}
                 </h2>
               )}
@@ -94,6 +95,14 @@ export default function StatusPage() {
           {sites.map((site) => (
             <SiteCard key={site.id} site={site} />
           ))}
+        </section>
+      )}
+
+      {sites.length > 0 && (
+        <section className="mt-6 sm:mt-8">
+          <UptimeHistory
+            sites={sites.map((s) => ({ id: s.id, name: s.name }))}
+          />
         </section>
       )}
 
