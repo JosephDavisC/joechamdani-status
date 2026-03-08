@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo, useRef, useEffect, useCallback } from "react";
+import { createPortal } from "react-dom";
 import { useQuery } from "@tanstack/react-query";
 import { ChevronDown, ChevronLeft, ChevronRight } from "lucide-react";
 
@@ -329,21 +330,23 @@ export function UptimeHistory({ sites }: { sites: SiteOption[] }) {
         <span>No downtime</span>
       </div>
 
-      {/* Tooltip */}
-      {tooltip && (
-        <div
-          ref={tooltipRef}
-          className="pointer-events-none fixed z-50 whitespace-nowrap rounded-md bg-[var(--popover)] px-3 py-1.5 text-xs font-medium text-[var(--popover-foreground)] shadow-lg"
-          style={{
-            left: tooltipLeft,
-            top: tooltip.anchorY - 8,
-            transform: "translateY(-100%)",
-            border: "1px solid var(--border)",
-          }}
-        >
-          {tooltip.text}
-        </div>
-      )}
+      {/* Tooltip — portaled to body to avoid glass-card transform breaking fixed positioning */}
+      {tooltip &&
+        createPortal(
+          <div
+            ref={tooltipRef}
+            className="pointer-events-none fixed z-50 whitespace-nowrap rounded-md bg-[var(--popover)] px-3 py-1.5 text-xs font-medium text-[var(--popover-foreground)] shadow-lg"
+            style={{
+              left: tooltipLeft,
+              top: tooltip.anchorY - 8,
+              transform: "translateY(-100%)",
+              border: "1px solid var(--border)",
+            }}
+          >
+            {tooltip.text}
+          </div>,
+          document.body
+        )}
     </div>
   );
 }
