@@ -191,7 +191,7 @@ export function UptimeHistory({ sites }: { sites: SiteOption[] }) {
                 <h3 className="text-xs font-semibold text-[var(--foreground)] sm:text-sm">
                   {formatMonth(year, month)}
                 </h3>
-                {uptimePct !== null && (
+                {uptimePct != null && (
                   <span
                     className="font-[family-name:var(--font-mono)] text-xs font-semibold tabular-nums"
                     style={{ color: getColorHex(uptimePct) }}
