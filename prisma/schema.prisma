@@ -11,6 +11,7 @@ model Site {
   id        String   @id @default(cuid())
   name      String
   url       String   @unique
+  group     String?
   order     Int      @default(0)
   active    Boolean  @default(true)
   createdAt DateTime @default(now())

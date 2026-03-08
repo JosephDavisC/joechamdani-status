@@ -11,6 +11,7 @@ interface SiteData {
   id: string;
   name: string;
   url: string;
+  group: string | null;
   status: "up" | "down" | "unknown";
   responseTime: number | null;
   uptime90d: number;
@@ -49,6 +50,18 @@ export default function StatusPage() {
       .sort()
       .reverse()[0] ?? null;
 
+  // Group sites by their group field, preserving order
+  const groups: { label: string | null; sites: SiteData[] }[] = [];
+  const seen = new Set<string | null>();
+  for (const site of sites) {
+    if (!seen.has(site.group)) {
+      seen.add(site.group);
+      groups.push({ label: site.group, sites: [] });
+    }
+    groups.find((g) => g.label === site.group)!.sites.push(site);
+  }
+  const hasGroups = groups.some((g) => g.label !== null);
+
   return (
     <main className="mx-auto max-w-3xl px-3 py-6 sm:px-6 sm:py-12">
       <StatusHeader
@@ -59,11 +72,30 @@ export default function StatusPage() {
         overallUptime={overallUptime}
       />
 
-      <section className="space-y-2 sm:space-y-3">
-        {sites.map((site) => (
-          <SiteCard key={site.id} site={site} />
-        ))}
-      </section>
+      {hasGroups ? (
+        <div className="space-y-6 sm:space-y-8">
+          {groups.map((group) => (
+            <section key={group.label ?? "other"}>
+              {group.label && (
+                <h2 className="mb-2 sm:mb-3 text-xs font-semibold uppercase tracking-widest text-muted-foreground">
+                  {group.label}
+                </h2>
+              )}
+              <div className="space-y-2 sm:space-y-3">
+                {group.sites.map((site) => (
+                  <SiteCard key={site.id} site={site} />
+                ))}
+              </div>
+            </section>
+          ))}
+        </div>
+      ) : (
+        <section className="space-y-2 sm:space-y-3">
+          {sites.map((site) => (
+            <SiteCard key={site.id} site={site} />
+          ))}
+        </section>
+      )}
 
       {sites.length > 0 && (
         <section className="mt-6 sm:mt-8">

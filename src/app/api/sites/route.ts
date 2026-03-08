@@ -46,6 +46,7 @@ export async function GET() {
           id: site.id,
           name: site.name,
           url: site.url,
+          group: site.group ?? null,
           status: latestPing?.isUp ? "up" : totalCount === 0 ? "unknown" : "down",
           responseTime: latestPing?.responseTime ?? null,
           uptime90d: Math.round(uptime90d * 100) / 100,
