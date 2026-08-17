@@ -1,7 +1,7 @@
 # Status Page – joechamdani.com
 
 [![Website](https://img.shields.io/badge/Website-status.joechamdani.com-60A5FA?style=for-the-badge&logo=vercel&logoColor=white)](https://status.joechamdani.com)
-[![Uptime](https://img.shields.io/badge/Monitoring-6_Sites-22c55e?style=for-the-badge)](https://status.joechamdani.com)
+[![Uptime](https://img.shields.io/badge/Monitoring-9_Sites-22c55e?style=for-the-badge)](https://status.joechamdani.com)
 
 ---
 
@@ -15,7 +15,7 @@ Live Site: **[status.joechamdani.com](https://status.joechamdani.com)**
 
 ## Features
 
-- **Real-time monitoring** of 6 websites with 60-second ping intervals
+- **Real-time monitoring** of 9 websites with 60-second ping intervals
 - **90-day uptime bars** with per-day color coding and hover tooltips
 - **24h response time charts** per site (expandable) and multi-site overlay
 - **Incident detection** with 3-strike rule (3 consecutive failures before alerting)
@@ -29,14 +29,19 @@ Live Site: **[status.joechamdani.com](https://status.joechamdani.com)**
 
 ## Monitored Sites
 
-| Site | URL |
-|------|-----|
-| Portfolio | [joechamdani.com](https://joechamdani.com) |
-| Dashboard | [dashboard.joechamdani.com](https://dashboard.joechamdani.com) |
-| UW Portfolio | [uw.joechamdani.com](https://uw.joechamdani.com) |
-| Transfer Tool | [transfer.joechamdani.cloud](https://transfer.joechamdani.cloud) |
-| INFO 340 | [info340.joechamdani.com](https://info340.joechamdani.com) |
-| INFO 200 | [info200.joechamdani.cloud](https://info200.joechamdani.cloud) |
+| Group | Site | URL |
+|-------|------|-----|
+| Personal | Portfolio | [joechamdani.com](https://joechamdani.com) |
+| Personal | Freelance | [freelance.joechamdani.com](https://freelance.joechamdani.com) |
+| Personal | CDN | [cdn.joechamdani.com](https://cdn.joechamdani.com) |
+| UW Projects | UW Portfolio | [uw.joechamdani.com](https://uw.joechamdani.com) |
+| UW Projects | Transfer Tool | [transfer.joechamdani.cloud](https://transfer.joechamdani.cloud) |
+| UW Projects | INFO 340 | [info340.joechamdani.com](https://info340.joechamdani.com) |
+| UW Projects | INFO 200 | [info200.joechamdani.cloud](https://info200.joechamdani.cloud) |
+| UW Projects | INFO 360 | [info360.joechamdani.com](https://info360.joechamdani.com) |
+| UW Projects | INFO 380 | [info380.joechamdani.com](https://info380.joechamdani.com) |
+
+dashboard.joechamdani.com exists in the database with `active: false` — it is private and monitored from the personal dashboard instead of this public page.
 
 ---
 
@@ -60,7 +65,7 @@ Live Site: **[status.joechamdani.com](https://status.joechamdani.com)**
 status/
 ├── prisma/
 │   ├── schema.prisma        # Site, Ping, Incident models
-│   ├── seed.ts              # Seed 6 monitored sites
+│   ├── seed.ts              # Seed monitored sites
 │   └── migrations/
 ├── public/
 │   ├── favicon.ico

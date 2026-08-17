@@ -33,6 +33,8 @@ model Ping {
 
   @@index([siteId, checkedAt])
   @@index([checkedAt])
+  // Covering index so 90d uptime aggregations are index-only scans
+  @@index([siteId, checkedAt, isUp, responseTime])
 }
 
 model Incident {
