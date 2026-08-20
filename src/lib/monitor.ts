@@ -1,13 +1,14 @@
 import { prisma } from "@/lib/prisma";
-import { pingSite } from "@/lib/ping";
+import { pingSite, type PingResult } from "@/lib/ping";
+import { sendPush, formatDuration } from "@/lib/ntfy";
 import type { Site } from "@/generated/prisma/client";
 
-async function detectIncident(site: Site, isUp: boolean) {
+async function detectIncident(site: Site, result: PingResult) {
   const ongoingIncident = await prisma.incident.findFirst({
     where: { siteId: site.id, resolvedAt: null },
   });
 
-  if (!isUp) {
+  if (!result.isUp) {
     // 3-strike rule: only create incident after 3 consecutive failures
     const recentPings = await prisma.ping.findMany({
       where: { siteId: site.id },
@@ -26,6 +27,11 @@ async function detectIncident(site: Site, isUp: boolean) {
           startedAt: oldest?.checkedAt ?? new Date(),
         },
       });
+      await sendPush(
+        `status: ${site.name} DOWN`,
+        `${site.url} - 3 failed pings, last HTTP ${result.status}`,
+        "high"
+      );
     }
   } else if (ongoingIncident) {
     const duration = Math.round(
@@ -35,6 +41,10 @@ async function detectIncident(site: Site, isUp: boolean) {
       where: { id: ongoingIncident.id },
       data: { resolvedAt: new Date(), duration },
     });
+    await sendPush(
+      `status: ${site.name} recovered`,
+      `back up after ${formatDuration(duration)} - HTTP ${result.status} in ${result.responseTime}ms`
+    );
   }
 }
 
@@ -62,7 +72,7 @@ export async function runChecks() {
       },
     });
 
-    await detectIncident(site, result.isUp);
+    await detectIncident(site, result);
   }
 
   await cleanupOldPings();

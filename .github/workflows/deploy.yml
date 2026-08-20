@@ -32,6 +32,12 @@ jobs:
             docker compose rm -f status
             docker compose up -d status db
             sleep 10
-            curl -sf https://status.joechamdani.com/api/health || echo "Health check failed!"
+            ntfy() { curl -s -o /dev/null --max-time 15 -H "Authorization: Bearer $(cat /root/ntfy/publish-token)" -H "Title: $1" -H "Priority: $2" -d "$3" https://ntfy.joechamdani.com/general || true; }
+            if curl -sf https://status.joechamdani.com/api/health > /dev/null; then
+              ntfy "status app deployed" default "GitHub Actions build finished, health check passed"
+            else
+              echo "Health check failed!"
+              ntfy "status app deploy UNHEALTHY" high "Deployed but /api/health is failing, check the container"
+            fi
             docker image prune -af --filter "until=24h"
             docker container prune -f
