@@ -73,6 +73,11 @@ export default function RootLayout({
       <head>
         <link rel="canonical" href="https://status.joechamdani.com" />
         <script
+          defer
+          src="https://analytics.joechamdani.com/script.js"
+          data-website-id="28e361ba-49b8-4b84-aeb2-0013aae12e92"
+        ></script>
+        <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />

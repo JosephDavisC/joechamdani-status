@@ -42,6 +42,13 @@ const sites = [
     active: true,
   },
   {
+    name: "Analytics",
+    url: "https://analytics.joechamdani.com",
+    group: "Personal",
+    order: 4,
+    active: true,
+  },
+  {
     name: "UW Portfolio",
     url: "https://uw.joechamdani.com",
     group: "UW Projects",
