@@ -76,6 +76,7 @@ export default function RootLayout({
           defer
           src="https://analytics.joechamdani.com/script.js"
           data-website-id="28e361ba-49b8-4b84-aeb2-0013aae12e92"
+          data-performance="true"
         ></script>
         <script
           type="application/ld+json"
